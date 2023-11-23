@@ -15,7 +15,7 @@ export default function Home() {
   const { data, options, text, loading } = useAxios(currentPage);
 
   useEffect(() => {
-    if (data !== undefined) setAnswer(data?.[0]?.name?.common);
+    if (data !== undefined) setAnswer(data?.[0]?.translations?.por?.common);
   }, [data]);
 
   const handleClick = (name: string) => {

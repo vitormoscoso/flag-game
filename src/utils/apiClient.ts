@@ -1,6 +1,33 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
+const continents: { [key: string]: string } = {
+  Africa: "Africa",
+  Asia: "Asia",
+  Europe: "Europa",
+  "North America": "América do Norte",
+  "South America": "América do Sul",
+  Oceania: "Oceania",
+};
+
+const countries = [
+  "Japão",
+  "África do Sul",
+  "Nepal",
+  "Canadá",
+  "Turquia",
+  "Nova Zelândia",
+  "Mongólia",
+  "Panamá",
+  "Suíça",
+  "Austrália",
+  "Quénia",
+  "Jamaica",
+  "Islândia",
+  "Grécia",
+  "Itália",
+];
+
 function shuffleArray(array: string[]) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -14,7 +41,7 @@ function getText(
   area: number,
   population: number,
   capital: string,
-  continents: string
+  continent: string
 ): string {
   const formattedArea = new Intl.NumberFormat("pt-BR", {
     style: "decimal",
@@ -23,26 +50,8 @@ function getText(
     style: "decimal",
   }).format(population);
 
-  return `${country} possui uma área de ${formattedArea} km², com uma população de ${formattedPop}. A capital é ${capital} e pertence ao continente da ${continents}.`;
+  return `${country} possui uma área de ${formattedArea} km², com uma população de ${formattedPop}. A capital é ${capital} e pertence ao continente da ${continents[continent]}.`;
 }
-
-const countries = [
-  "Japan",
-  "South Africa",
-  "Nepal",
-  "Canada",
-  "Turkey",
-  "New Zealand",
-  "Mongolia",
-  "Panama",
-  "Switzerland",
-  "Australia",
-  "Kenya",
-  "Jamaica",
-  "Iceland",
-  "Greece",
-  "Italy",
-];
 
 type CountryData = {
   name: { common: string };
@@ -51,6 +60,7 @@ type CountryData = {
   population: number;
   continents: string[];
   capital: string[];
+  translations: { por: { common: string } };
 };
 
 const useAxios = (currentPage: number) => {
@@ -68,14 +78,13 @@ const useAxios = (currentPage: number) => {
     const fetchData = async () => {
       try {
         const response = await axios.get<CountryData[]>(
-          `https://restcountries.com/v3.1/name/${
+          `https://restcountries.com/v3.1/translation/${
             countries[currentPage - 1]
-          }?fields=name,flags,capital,area,continents,population`
+          }?fields=name,flags,capital,area,continents,population,translations`
         );
         setData(response.data);
-        console.log(response?.data?.[0]);
 
-        const selectedCountry = response?.data?.[0]?.name?.common;
+        const selectedCountry = response?.data?.[0]?.translations?.por?.common;
         let options: string[] = [selectedCountry];
         let filteredCountries = countries.filter(
           (country) => country !== selectedCountry
