@@ -30,12 +30,19 @@ export default function Home() {
       setShowText(false);
     }
   };
-  const handleClickRestart = () => {
+  const handleClickResult = () => {
     // setCurrentPage(1);
     // setAttempt(0);
     // setButtonColors({});
     // setShowText(false);
     setGameOver(true);
+  };
+  const handleClickRestart = () => {
+    setCurrentPage(1);
+    setAttempt(0);
+    setButtonColors({});
+    setShowText(false);
+    setGameOver(false);
   };
 
   const handleNextPage = () => {
@@ -77,7 +84,7 @@ export default function Home() {
         >
           <p>{currentPage}/15</p>
           {currentPage >= 15 ? (
-            <button onClick={handleClickRestart}>Obter Resultado!</button>
+            <button onClick={handleClickResult}>Obter Resultado!</button>
           ) : (
             attempt === 1 && <button onClick={handleNextPage}>Próxima</button>
           )}
@@ -121,7 +128,14 @@ export default function Home() {
           </StyledButton>
         ))}
         {showText ? <p style={{ maxWidth: "100%" }}>{text}</p> : <></>}
-        {gameOver ? <p>Parabéns! Você acertou {points}\15 bandeiras</p> : <></>}
+        {gameOver ? (
+          <div style={{display: "flex", flexDirection:"column"}}>
+            <p>Parabéns! Você acertou {points}\15 bandeiras</p>
+            <button onClick={handleClickRestart}>Jogar novamente</button>
+          </div>
+        ) : (
+          <></>
+        )}
       </div>
     </div>
   );
