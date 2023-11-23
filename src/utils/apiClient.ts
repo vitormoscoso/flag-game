@@ -1,13 +1,31 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-const continents: { [key: string]: string } = {
-  Africa: "Africa",
-  Asia: "Asia",
-  Europe: "Europa",
-  "North America": "América do Norte",
+const translatedRegions: { [key: string]: string } = {
+  "Western Africa": "África Ocidental",
+  "Eastern Asia": "Ásia Oriental",
+  "Western Asia": "Ásia Ocidental",
+  Caribbean: "Caribe",
+  "Eastern Africa": "África Oriental",
+  Polynesia: "Polinésia",
+  "Southeast Europe": "Europa do Sudeste",
+  "South-Eastern Asia": "Ásia do Sudeste",
+  "Central America": "América Central",
   "South America": "América do Sul",
-  Oceania: "Oceania",
+  "Northern Europe": "Europa do Norte",
+  "Southern Asia": "Ásia do Sul",
+  "Australia and New Zealand": "Austrália e Nova Zelândia",
+  "Northern Africa": "África do Norte",
+  "Middle Africa": "África Central",
+  Micronesia: "Micronésia",
+  "North America": "América do Norte",
+  "Southern Europe": "Europa do Sul",
+  "Southern Africa": "África do Sul",
+  "Central Asia": "Ásia Central",
+  "Eastern Europe": "Europa Oriental",
+  "Western Europe": "Europa Ocidental",
+  Melanesia: "Melanésia",
+  "Central Europe": "Europa Central",
 };
 
 const countries = [
@@ -41,7 +59,7 @@ function getText(
   area: number,
   population: number,
   capital: string,
-  continent: string
+  region: string
 ): string {
   const formattedArea = new Intl.NumberFormat("pt-BR", {
     style: "decimal",
@@ -50,7 +68,7 @@ function getText(
     style: "decimal",
   }).format(population);
 
-  return `${country} possui uma área de ${formattedArea} km², com uma população de ${formattedPop}. A capital é ${capital} e pertence ao continente da ${continents[continent]}.`;
+  return `${country} possui uma área de ${formattedArea} km², com uma população de ${formattedPop}. A capital é ${capital} e pertence à região do(a) ${translatedRegions[region]}.`;
 }
 
 type CountryData = {
@@ -58,7 +76,7 @@ type CountryData = {
   flags: { png: string };
   area: number;
   population: number;
-  continents: string[];
+  subregion: string;
   capital: string[];
   translations: { por: { common: string } };
 };
@@ -69,7 +87,7 @@ const useAxios = (currentPage: number) => {
   const [error, setError] = useState<string>("");
   const [area, setArea] = useState<number>();
   const [population, setPopulation] = useState<number>();
-  const [continent, setContinent] = useState<string>("");
+  const [region, setRegion] = useState<string>("");
   const [capital, setCapital] = useState<string>("");
   const [country, setCountry] = useState<string>("");
   const [answerOptions, setAnswerOptions] = useState<string[]>([]);
@@ -80,7 +98,7 @@ const useAxios = (currentPage: number) => {
         const response = await axios.get<CountryData[]>(
           `https://restcountries.com/v3.1/translation/${
             countries[currentPage - 1]
-          }?fields=name,flags,capital,area,continents,population,translations`
+          }?fields=name,flags,capital,area,subregion,population,translations`
         );
         setData(response.data);
 
@@ -101,7 +119,7 @@ const useAxios = (currentPage: number) => {
         setAnswerOptions(options);
         setArea(response?.data?.[0]?.area);
         setPopulation(response?.data?.[0]?.population);
-        setContinent(response?.data?.[0]?.continents?.[0]);
+        setRegion(response?.data?.[0]?.subregion);
         setCapital(response?.data?.[0]?.capital?.[0]);
         setCountry(selectedCountry);
       } catch (err) {
@@ -122,7 +140,7 @@ const useAxios = (currentPage: number) => {
       area !== undefined ? area : 0,
       population !== undefined ? population : 0,
       capital,
-      continent
+      region
     ),
     loading,
     error,
