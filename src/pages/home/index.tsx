@@ -77,9 +77,9 @@ export default function Home() {
         >
           <p>{currentPage}/15</p>
           {currentPage >= 15 ? (
-            <button onClick={handleClickRestart}>Obeter Resultado!</button>
+            <button onClick={handleClickRestart}>Obter Resultado!</button>
           ) : (
-            <button onClick={handleNextPage}>Próxima</button>
+            attempt === 1 && <button onClick={handleNextPage}>Próxima</button>
           )}
           {/* {attempt === 1 ? (
             <button
