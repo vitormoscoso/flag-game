@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import useAxios from "../../utils/apiClient";
+import { StyledButton } from "./styles";
 export default function Home() {
   const [answer, setAnswer] = useState("");
   const [buttonColors, setButtonColors] = useState<{ [key: string]: string }>(
     {}
   );
   const [showText, setShowText] = useState(false);
+  const [gameOver, setGameOver] = useState(false);
   const [attempt, setAttempt] = useState(0);
   const [points, setPoints] = useState(0);
   const [currentPage, setCurrentPage] = useState(1);
@@ -29,10 +31,11 @@ export default function Home() {
     }
   };
   const handleClickRestart = () => {
-    setCurrentPage(1);
-    setAttempt(0);
-    setButtonColors({});
-    setShowText(false);
+    // setCurrentPage(1);
+    // setAttempt(0);
+    // setButtonColors({});
+    // setShowText(false);
+    setGameOver(true);
   };
 
   const handleNextPage = () => {
@@ -74,7 +77,7 @@ export default function Home() {
         >
           <p>{currentPage}/15</p>
           {currentPage >= 15 ? (
-            <button onClick={handleClickRestart}>Reiniciar</button>
+            <button onClick={handleClickRestart}>Obeter Resultado!</button>
           ) : (
             <button onClick={handleNextPage}>Próxima</button>
           )}
@@ -108,25 +111,17 @@ export default function Home() {
           ></img>
         )}
         {options?.map((countryName) => (
-          <button
+          <StyledButton
             key={countryName}
-            style={{
-              border: "1px solid",
-              width: "100%",
-              textAlign: "center",
-              marginTop: "5px",
-              marginBottom: "5px",
-              padding: "5px",
-              backgroundColor: buttonColors[countryName] || "",
-              cursor: `${attempt === 1 ? "default" : "pointer"}`,
-            }}
+            bgColor={buttonColors[countryName]}
             onClick={() => handleClick(countryName)}
-            disabled={attempt === 1 ? true : false}
+            disabled={attempt === 1}
           >
             {countryName}
-          </button>
+          </StyledButton>
         ))}
         {showText ? <p style={{ maxWidth: "100%" }}>{text}</p> : <></>}
+        {gameOver ? <p>Parabéns! Você acertou {points}\15 bandeiras</p> : <></>}
       </div>
     </div>
   );
