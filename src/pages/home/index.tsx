@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { StyledButton } from "./styles";
 import useAxios from "../../utils/apiClient";
 import MapComponent from "../../components/MapComponent";
+import ResultModal from "../../components/ResultModal";
 export default function Home() {
   const [answer, setAnswer] = useState<string>("");
   const [buttonColors, setButtonColors] = useState<{ [key: string]: string }>(
@@ -121,13 +122,17 @@ export default function Home() {
             </StyledButton>
           ))}
           {gameOver ? (
-            <div style={{ display: "flex", flexDirection: "column" }}>
-              <p>Parabéns! Você acertou {points}\15 bandeiras</p>
-              <button onClick={handleClickRestart}>Jogar novamente</button>
-            </div>
+            <ResultModal
+              result={points}
+              handleClickRestart={handleClickRestart}
+            />
           ) : (
             <></>
           )}
+          <ResultModal
+            result={points}
+            handleClickRestart={handleClickRestart}
+          />
         </div>
         {showText ? (
           <div style={{ width: "90%", height: "30%", marginTop: "3%" }}>
