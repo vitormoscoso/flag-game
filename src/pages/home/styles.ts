@@ -4,6 +4,32 @@ interface StyledButtonProps {
   bgColor: string; // Adicione outras propriedades personalizadas conforme necessário
 }
 
+export const PageConatiner = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: whitesmoke;
+`;
+
+export const ContentConatiner = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 40%;
+`;
+
+export const CardContainer = styled.div`
+  width: 55%;
+  height: 50%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+`;
+
 export const StyledButton = styled.button<StyledButtonProps>`
   border: 1px solid;
   width: 100%;
