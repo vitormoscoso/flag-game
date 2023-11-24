@@ -1,18 +1,19 @@
 import { useState, useEffect } from "react";
-import useAxios from "../../utils/apiClient";
 import { StyledButton } from "./styles";
+import useAxios from "../../utils/apiClient";
+import MapComponent from "../../components/MapComponent";
 export default function Home() {
-  const [answer, setAnswer] = useState("");
+  const [answer, setAnswer] = useState<string>("");
   const [buttonColors, setButtonColors] = useState<{ [key: string]: string }>(
     {}
   );
-  const [showText, setShowText] = useState(false);
-  const [gameOver, setGameOver] = useState(false);
-  const [attempt, setAttempt] = useState(0);
-  const [points, setPoints] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [showText, setShowText] = useState<boolean>(false);
+  const [gameOver, setGameOver] = useState<boolean>(false);
+  const [attempt, setAttempt] = useState<number>(0);
+  const [points, setPoints] = useState<number>(0);
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const { data, options, text, loading } = useAxios(currentPage);
+  const { data, options, text, position, loading } = useAxios(currentPage);
 
   useEffect(() => {
     if (data !== undefined) setAnswer(data?.[0]?.translations?.por?.common);
@@ -31,10 +32,6 @@ export default function Home() {
     }
   };
   const handleClickResult = () => {
-    // setCurrentPage(1);
-    // setAttempt(0);
-    // setButtonColors({});
-    // setShowText(false);
     setGameOver(true);
   };
   const handleClickRestart = () => {
@@ -55,6 +52,7 @@ export default function Home() {
   return (
     <div
       style={{
+        position: "fixed",
         width: "100%",
         height: "100vh",
         display: "flex",
@@ -67,71 +65,74 @@ export default function Home() {
         style={{
           display: "flex",
           flexDirection: "column",
-          justifyContent: "center",
           alignItems: "center",
-          width: "20%",
+          width: "40%",
+          height: "90%",
         }}
       >
         <div
           style={{
-            width: "100%",
+            width: "55%",
+            height: "50%",
             display: "flex",
-            flexDirection: "row",
-            justifyContent: "space-between",
+            flexDirection: "column",
+            justifyContent: "center",
             alignItems: "center",
-            height: "100%",
           }}
         >
-          <p>{currentPage}/15</p>
-          {currentPage >= 15 ? (
-            <button onClick={handleClickResult}>Obter Resultado!</button>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <p>{currentPage}/15</p>
+            {currentPage >= 15 ? (
+              <button onClick={handleClickResult}>Obter Resultado!</button>
+            ) : (
+              attempt === 1 && <button onClick={handleNextPage}>Próxima</button>
+            )}
+          </div>
+          {loading ? (
+            <></>
           ) : (
-            attempt === 1 && <button onClick={handleNextPage}>Próxima</button>
-          )}
-          {/* {attempt === 1 ? (
-            <button
-              style={{ height: "fit-content" }}
-              onClick={() => {
-                setAttempt(0);
-                setButtonColors({});
-                setShowText(false);
+            <img
+              alt="flag"
+              src={data?.[0]?.flags?.png}
+              style={{
+                minHeight: "25vh",
+                maxHeight: "25vh",
+                minWidth: "100%",
+                maxWidth: "100%",
               }}
+            ></img>
+          )}
+          {options?.map((countryName) => (
+            <StyledButton
+              key={countryName}
+              bgColor={buttonColors[countryName]}
+              onClick={() => handleClick(countryName)}
+              disabled={attempt === 1}
             >
-              Outra tentativa
-            </button>
+              {countryName}
+            </StyledButton>
+          ))}
+          {gameOver ? (
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <p>Parabéns! Você acertou {points}\15 bandeiras</p>
+              <button onClick={handleClickRestart}>Jogar novamente</button>
+            </div>
           ) : (
             <></>
-          )} */}
+          )}
         </div>
-        {loading ? (
-          <></>
-        ) : (
-          <img
-            alt="flag"
-            src={data?.[0]?.flags?.png}
-            style={{
-              minHeight: "25vh",
-              maxHeight: "25vh",
-              minWidth: "20vw",
-              maxWidth: "20vw",
-            }}
-          ></img>
-        )}
-        {options?.map((countryName) => (
-          <StyledButton
-            key={countryName}
-            bgColor={buttonColors[countryName]}
-            onClick={() => handleClick(countryName)}
-            disabled={attempt === 1}
-          >
-            {countryName}
-          </StyledButton>
-        ))}
-        {showText ? <p style={{ maxWidth: "100%" }}>{text}</p> : <></>}
-        {gameOver ? (
-          <div style={{display: "flex", flexDirection:"column"}}>
-            <p>Parabéns! Você acertou {points}\15 bandeiras</p>
-            <button onClick={handleClickRestart}>Jogar novamente</button>
+        {showText ? (
+          <div style={{ width: "90%", height: "30%", marginTop: "3%" }}>
+            <MapComponent position={position} />
+            <p style={{ maxWidth: "100%" }}>{text}</p>
           </div>
         ) : (
           <></>
