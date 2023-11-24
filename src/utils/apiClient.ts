@@ -14,7 +14,7 @@ const translatedRegions: { [key: string]: string } = {
   "South America": "América do Sul",
   "Northern Europe": "Europa do Norte",
   "Southern Asia": "Ásia do Sul",
-  "Australia and New Zealand": "Austrália e Nova Zelândia",
+  "Australia and New Zealand": "Oceania",
   "Northern Africa": "África do Norte",
   "Middle Africa": "África Central",
   Micronesia: "Micronésia",
@@ -55,10 +55,12 @@ function shuffleArray(array: string[]) {
 }
 
 function getText(
-  country: string,
+  name: string,
   area: number,
   population: number,
   capital: string,
+  nativeName: string,
+  currency: { name: string; symbol: string },
   region: string
 ): string {
   const formattedArea = new Intl.NumberFormat("pt-BR", {
@@ -68,28 +70,38 @@ function getText(
     style: "decimal",
   }).format(population);
 
-  return `${country} possui uma área de ${formattedArea} km², com uma população de ${formattedPop}. A capital é ${capital} e pertence à região do(a) ${translatedRegions[region]}.`;
+  return `${name}, conhecido oficialmente como ${nativeName}, é uma nação localizada na região da(o) ${translatedRegions[region]} e conta com uma população de aproximadamente ${formattedPop}. Possui uma área total de ${formattedArea} km² e sua capital é ${capital}, além de sua moeda oficial ser o(a) ${currency?.name} (${currency?.symbol})`;
 }
 
 type CountryData = {
-  name: { common: string };
+  // name: { common: string; native: string };
+  name: any;
+  nativeName: { common: string };
   flags: { png: string };
   area: number;
   population: number;
+  currencies: any;
   subregion: string;
   capital: string[];
   translations: { por: { common: string } };
+  latlng: number[];
 };
 
 const useAxios = (currentPage: number) => {
   const [data, setData] = useState<CountryData[]>();
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string>("");
+  const [nativeName, setNativeName] = useState<string>();
   const [area, setArea] = useState<number>();
   const [population, setPopulation] = useState<number>();
   const [region, setRegion] = useState<string>("");
+  const [currencies, setCurrencies] = useState<{
+    name: string;
+    symbol: string;
+  }>();
   const [capital, setCapital] = useState<string>("");
   const [country, setCountry] = useState<string>("");
+  const [position, setPosition] = useState<{ lat: number; lng: number }>();
   const [answerOptions, setAnswerOptions] = useState<string[]>([]);
 
   useEffect(() => {
@@ -98,7 +110,7 @@ const useAxios = (currentPage: number) => {
         const response = await axios.get<CountryData[]>(
           `https://restcountries.com/v3.1/translation/${
             countries[currentPage - 1]
-          }?fields=name,flags,capital,area,subregion,population,translations`
+          }?fields=name,flags,capital,area,subregion,population,translations,latlng,currencies`
         );
         setData(response.data);
 
@@ -115,6 +127,16 @@ const useAxios = (currentPage: number) => {
           // Remove o país escolhido para evitar duplicatas
           filteredCountries.splice(randomIndex, 1);
         }
+        const currency = Object.keys(response?.data?.[0]?.currencies)?.[0];
+        const currencyName = response?.data?.[0]?.currencies[currency].name;
+        const currencySymbol = response?.data?.[0]?.currencies[currency].symbol;
+        const nativeNameKey = Object.keys(
+          response?.data?.[0]?.name?.nativeName
+        )[0];
+        const commonNative =
+          response?.data?.[0]?.name?.nativeName[nativeNameKey]?.common;
+
+        setNativeName(commonNative);
         shuffleArray(options);
         setAnswerOptions(options);
         setArea(response?.data?.[0]?.area);
@@ -122,6 +144,11 @@ const useAxios = (currentPage: number) => {
         setRegion(response?.data?.[0]?.subregion);
         setCapital(response?.data?.[0]?.capital?.[0]);
         setCountry(selectedCountry);
+        setCurrencies({ name: currencyName, symbol: currencySymbol });
+        setPosition({
+          lat: response?.data?.[0]?.latlng[0],
+          lng: response?.data?.[0]?.latlng[1],
+        });
       } catch (err) {
         setError("Erro ao carregar dados");
       } finally {
@@ -134,12 +161,15 @@ const useAxios = (currentPage: number) => {
 
   return {
     data,
+    position,
     options: answerOptions,
     text: getText(
       country,
       area !== undefined ? area : 0,
       population !== undefined ? population : 0,
       capital,
+      nativeName !== undefined ? nativeName : "",
+      currencies !== undefined ? currencies : { name: "", symbol: "" },
       region
     ),
     loading,
