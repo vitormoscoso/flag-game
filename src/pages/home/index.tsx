@@ -1,8 +1,15 @@
 import { useState, useEffect } from "react";
-import { StyledButton } from "./styles";
+import {
+  CardContainer,
+  ContentConatiner,
+  PageConatiner,
+  StyledButton,
+} from "./styles";
 import useAxios from "../../utils/apiClient";
 import MapComponent from "../../components/MapComponent";
 import ResultModal from "../../components/ResultModal";
+import { useMediaQuery } from "react-responsive";
+
 export default function Home() {
   const [answer, setAnswer] = useState<string>("");
   const [buttonColors, setButtonColors] = useState<{ [key: string]: string }>(
@@ -13,6 +20,9 @@ export default function Home() {
   const [attempt, setAttempt] = useState<number>(0);
   const [points, setPoints] = useState<number>(0);
   const [currentPage, setCurrentPage] = useState<number>(1);
+
+  const isMobile = useMediaQuery({ maxWidth: 767 });
+  // const isBigScreen = useMediaQuery({ query: "(min-width: 768px)" });
 
   const { data, options, text, position, loading } = useAxios(currentPage);
 
@@ -51,94 +61,169 @@ export default function Home() {
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        width: "100%",
-        height: "100vh",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        backgroundColor: "whitesmoke",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          width: "40%",
-          height: "90%",
-        }}
-      >
-        <div
-          style={{
-            width: "55%",
-            height: "50%",
-            display: "flex",
-            flexDirection: "column",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
+    <>
+      {isMobile ? (
+        <PageConatiner>
+          <ContentConatiner>
+            <CardContainer>
+              <div
+                style={{
+                  width: "100%",
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                }}
+              >
+                <p>{currentPage}/15</p>
+                {currentPage >= 15 ? (
+                  <button onClick={handleClickResult}>Obter Resultado!</button>
+                ) : (
+                  attempt === 1 && (
+                    <button onClick={handleNextPage}>Próxima</button>
+                  )
+                )}
+              </div>
+              {loading ? (
+                  <></>
+                ) : (
+                  <img
+                    alt="flag"
+                    src={data?.[0]?.flags?.png}
+                    style={{
+                      minHeight: "25vh",
+                      maxHeight: "25vh",
+                      minWidth: "100%",
+                      maxWidth: "100%",
+                    }}
+                  ></img>
+                )}
+                {options?.map((countryName) => (
+                  <StyledButton
+                    key={countryName}
+                    bgColor={buttonColors[countryName]}
+                    onClick={() => handleClick(countryName)}
+                    disabled={attempt === 1}
+                  >
+                    {countryName}
+                  </StyledButton>
+                ))}
+                {gameOver ? (
+                  <ResultModal
+                    result={points}
+                    handleClickRestart={handleClickRestart}
+                  />
+                ) : (
+                  <></>
+                )}
+            </CardContainer>
+            {showText ? (
+                <div style={{ width: "100%", height: "25%", marginTop: "3%" }}>
+                  <MapComponent position={position} />
+                  <p style={{ maxWidth: "100%" }}>{text}</p>
+                </div>
+              ) : (
+                <></>
+              )}
+          </ContentConatiner>
+        </PageConatiner>
+      ) : (
+        <>
           <div
             style={{
+              position: "fixed",
               width: "100%",
+              height: "100vh",
               display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
+              justifyContent: "center",
               alignItems: "center",
+              backgroundColor: "whitesmoke",
             }}
           >
-            <p>{currentPage}/15</p>
-            {currentPage >= 15 ? (
-              <button onClick={handleClickResult}>Obter Resultado!</button>
-            ) : (
-              attempt === 1 && <button onClick={handleNextPage}>Próxima</button>
-            )}
-          </div>
-          {loading ? (
-            <></>
-          ) : (
-            <img
-              alt="flag"
-              src={data?.[0]?.flags?.png}
+            <div
               style={{
-                minHeight: "25vh",
-                maxHeight: "25vh",
-                minWidth: "100%",
-                maxWidth: "100%",
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                width: "40%",
+                height: "90%",
               }}
-            ></img>
-          )}
-          {options?.map((countryName) => (
-            <StyledButton
-              key={countryName}
-              bgColor={buttonColors[countryName]}
-              onClick={() => handleClick(countryName)}
-              disabled={attempt === 1}
             >
-              {countryName}
-            </StyledButton>
-          ))}
-          {gameOver ? (
-            <ResultModal
-              result={points}
-              handleClickRestart={handleClickRestart}
-            />
-          ) : (
-            <></>
-          )}
-        </div>
-        {showText ? (
-          <div style={{ width: "90%", height: "30%", marginTop: "3%" }}>
-            <MapComponent position={position} />
-            <p style={{ maxWidth: "100%" }}>{text}</p>
+              <div
+                style={{
+                  width: "55%",
+                  height: "50%",
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "center",
+                  alignItems: "center",
+                }}
+              >
+                <div
+                  style={{
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                  }}
+                >
+                  <p>{currentPage}/15</p>
+                  {currentPage >= 15 ? (
+                    <button onClick={handleClickResult}>
+                      Obter Resultado!
+                    </button>
+                  ) : (
+                    attempt === 1 && (
+                      <button onClick={handleNextPage}>Próxima</button>
+                    )
+                  )}
+                </div>
+                {loading ? (
+                  <></>
+                ) : (
+                  <img
+                    alt="flag"
+                    src={data?.[0]?.flags?.png}
+                    style={{
+                      minHeight: "25vh",
+                      maxHeight: "25vh",
+                      minWidth: "100%",
+                      maxWidth: "100%",
+                    }}
+                  ></img>
+                )}
+                {options?.map((countryName) => (
+                  <StyledButton
+                    key={countryName}
+                    bgColor={buttonColors[countryName]}
+                    onClick={() => handleClick(countryName)}
+                    disabled={attempt === 1}
+                  >
+                    {countryName}
+                  </StyledButton>
+                ))}
+                {gameOver ? (
+                  <ResultModal
+                    result={points}
+                    handleClickRestart={handleClickRestart}
+                  />
+                ) : (
+                  <></>
+                )}
+              </div>
+              {showText ? (
+                <div style={{ width: "90%", height: "30%", marginTop: "3%" }}>
+                  <MapComponent position={position} />
+                  <p style={{ maxWidth: "100%" }}>{text}</p>
+                </div>
+              ) : (
+                <></>
+              )}
+            </div>
           </div>
-        ) : (
-          <></>
-        )}
-      </div>
-    </div>
+        </>
+      )}
+    </>
   );
 }
