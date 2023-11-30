@@ -5,10 +5,10 @@ import {
   PageConatiner,
   StyledButton,
 } from "./styles";
-import useAxios from "../../utils/apiClient";
 import MapComponent from "../../components/MapComponent";
 import ResultModal from "../../components/ResultModal";
 import { useMediaQuery } from "react-responsive";
+import useGetAmericas from "../../utils/useGetAmericas";
 
 export default function Home() {
   const [answer, setAnswer] = useState<string>("");
@@ -24,7 +24,7 @@ export default function Home() {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   // const isBigScreen = useMediaQuery({ query: "(min-width: 768px)" });
 
-  const { data, options, text, position, loading } = useAxios(currentPage);
+  const { data, options, text, loading } = useGetAmericas(currentPage);
 
   useEffect(() => {
     if (data !== undefined) setAnswer(data?.[0]?.translations?.por?.common);
@@ -34,6 +34,7 @@ export default function Home() {
     setAttempt(1);
     const newColors = { ...buttonColors };
     newColors[name] = name === answer ? "limegreen" : "orangered";
+    newColors[answer] = "limegreen";
     setButtonColors(newColors);
     if (name === answer) {
       setShowText(true);
@@ -85,46 +86,48 @@ export default function Home() {
                 )}
               </div>
               {loading ? (
-                  <></>
-                ) : (
-                  <img
-                    alt="flag"
-                    src={data?.[0]?.flags?.png}
-                    style={{
-                      minHeight: "25vh",
-                      maxHeight: "25vh",
-                      minWidth: "100%",
-                      maxWidth: "100%",
-                    }}
-                  ></img>
-                )}
-                {options?.map((countryName) => (
-                  <StyledButton
-                    key={countryName}
-                    bgColor={buttonColors[countryName]}
-                    onClick={() => handleClick(countryName)}
-                    disabled={attempt === 1}
-                  >
-                    {countryName}
-                  </StyledButton>
-                ))}
-                {gameOver ? (
-                  <ResultModal
-                    result={points}
-                    handleClickRestart={handleClickRestart}
-                  />
-                ) : (
-                  <></>
-                )}
-            </CardContainer>
-            {showText ? (
-                <div style={{ width: "100%", height: "25%", marginTop: "3%" }}>
-                  <MapComponent position={position} />
-                  <p style={{ maxWidth: "100%" }}>{text}</p>
-                </div>
+                <></>
+              ) : (
+                <img
+                  alt="flag"
+                  src={data?.[0]?.flags?.png}
+                  style={{
+                    minHeight: "25vh",
+                    maxHeight: "25vh",
+                    minWidth: "100%",
+                    maxWidth: "100%",
+                  }}
+                ></img>
+              )}
+              {options?.map((countryName) => (
+                <StyledButton
+                  key={countryName}
+                  bgColor={buttonColors[countryName]}
+                  selected={attempt === 1}
+                  attempt={attempt}
+                  onClick={() => handleClick(countryName)}
+                  disabled={attempt === 1}
+                >
+                  {countryName}
+                </StyledButton>
+              ))}
+              {gameOver ? (
+                <ResultModal
+                  result={points}
+                  handleClickRestart={handleClickRestart}
+                />
               ) : (
                 <></>
               )}
+            </CardContainer>
+            {showText ? (
+              <div style={{ width: "100%", height: "25%", marginTop: "3%" }}>
+                {/* <MapComponent position={position} /> */}
+                <p style={{ maxWidth: "100%" }}>{text}</p>
+              </div>
+            ) : (
+              <></>
+            )}
           </ContentConatiner>
         </PageConatiner>
       ) : (
@@ -197,6 +200,8 @@ export default function Home() {
                   <StyledButton
                     key={countryName}
                     bgColor={buttonColors[countryName]}
+                    selected={attempt === 1}
+                    attempt={attempt}
                     onClick={() => handleClick(countryName)}
                     disabled={attempt === 1}
                   >
@@ -214,7 +219,7 @@ export default function Home() {
               </div>
               {showText ? (
                 <div style={{ width: "90%", height: "30%", marginTop: "3%" }}>
-                  <MapComponent position={position} />
+                  {/* <MapComponent position={position} /> */}
                   <p style={{ maxWidth: "100%" }}>{text}</p>
                 </div>
               ) : (

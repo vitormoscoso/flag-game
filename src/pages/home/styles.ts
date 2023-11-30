@@ -1,7 +1,9 @@
 import styled from "styled-components";
 
 interface StyledButtonProps {
-  bgColor: string; // Adicione outras propriedades personalizadas conforme necessário
+  bgColor: string;
+  selected: boolean;
+  attempt: number;
 }
 
 export const PageConatiner = styled.div`
@@ -27,7 +29,6 @@ export const CardContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
-
 `;
 
 export const StyledButton = styled.button<StyledButtonProps>`
@@ -39,9 +40,9 @@ export const StyledButton = styled.button<StyledButtonProps>`
   padding: 5px;
   background-color: ${(props) => props.bgColor || "transparent"};
   cursor: ${(props) => (props.disabled ? "default" : "pointer")};
-  transition: background-color 0.3s;
-
+  transition: background-color 0.2s;
   &:hover {
-    background-color: #cccccc; /* Substitua pela cor desejada */
+    background-color: ${(props) =>
+      props.attempt === 1 ? props.bgColor : "#cccccc"};
   }
 `;
