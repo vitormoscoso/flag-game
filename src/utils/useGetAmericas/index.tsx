@@ -43,6 +43,7 @@ export default function useGetAmericas(currentPage: number) {
 
   const {
     data: test,
+    position,
     options,
     text,
   } = useAxios(currentPage, countries ?? [], data);
@@ -50,6 +51,7 @@ export default function useGetAmericas(currentPage: number) {
   return {
     data: test,
     options,
+    position,
     text,
     loading,
     error,

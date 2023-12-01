@@ -24,7 +24,7 @@ export default function Home() {
   const isMobile = useMediaQuery({ maxWidth: 767 });
   // const isBigScreen = useMediaQuery({ query: "(min-width: 768px)" });
 
-  const { data, options, text, loading } = useGetAmericas(currentPage);
+  const { data, options, position, text, loading } = useGetAmericas(currentPage);
 
   useEffect(() => {
     if (data !== undefined) setAnswer(data?.[0]?.translations?.por?.common);
@@ -122,7 +122,7 @@ export default function Home() {
             </CardContainer>
             {showText ? (
               <div style={{ width: "100%", height: "25%", marginTop: "3%" }}>
-                {/* <MapComponent position={position} /> */}
+                <MapComponent position={position} />
                 <p style={{ maxWidth: "100%" }}>{text}</p>
               </div>
             ) : (
@@ -219,7 +219,7 @@ export default function Home() {
               </div>
               {showText ? (
                 <div style={{ width: "90%", height: "30%", marginTop: "3%" }}>
-                  {/* <MapComponent position={position} /> */}
+                  <MapComponent position={position} />
                   <p style={{ maxWidth: "100%" }}>{text}</p>
                 </div>
               ) : (
