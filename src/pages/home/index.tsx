@@ -42,9 +42,11 @@ export default function Home() {
         const path = `/flag-game/jogo/${randomCountries.join("")}`;
         window.location.href = path;
       } else {
+        setNewGame(false);
         setError("Erro ao buscar países por região.");
       }
     } catch (error) {
+      setNewGame(false);
       setError("Erro ao iniciar jogo.");
       console.error("Erro ao iniciar jogo", error);
     }
