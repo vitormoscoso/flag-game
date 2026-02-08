@@ -1,229 +1,121 @@
-import { useState, useEffect } from "react";
+import axios from "axios";
+import { useState } from "react";
 import {
-  CardContainer,
-  ContentConatiner,
-  PageConatiner,
-  StyledButton,
+  Container,
+  Card,
+  Title,
+  Subtitle,
+  ButtonGroup,
+  Button,
+  RegionGrid,
+  RegionButton,
+  InputGroup,
+  Input,
+  ErrorMessage,
+  SectionTitle,
+  Divider,
 } from "./styles";
-import useAxios from "../../utils/apiClient";
-import MapComponent from "../../components/MapComponent";
-import ResultModal from "../../components/ResultModal";
-import { useMediaQuery } from "react-responsive";
 
 export default function Home() {
-  const [answer, setAnswer] = useState<string>("");
-  const [buttonColors, setButtonColors] = useState<{ [key: string]: string }>(
-    {}
-  );
-  const [showText, setShowText] = useState<boolean>(false);
-  const [gameOver, setGameOver] = useState<boolean>(false);
-  const [attempt, setAttempt] = useState<number>(0);
-  const [points, setPoints] = useState<number>(0);
-  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [newGame, setNewGame] = useState<boolean>(false);
+  const [existingGame, setExistingGame] = useState<boolean>(false);
+  const [gameCode, setGameCode] = useState<string>("");
+  const [error, setError] = useState<string>("");
 
-  const isMobile = useMediaQuery({ maxWidth: 767 });
-  // const isBigScreen = useMediaQuery({ query: "(min-width: 768px)" });
+  const handleNewGame = async (region: string) => {
+    try {
+      if (region === "europa") region = "europe";
 
-  const { data, options, text, position, loading } = useAxios(currentPage);
+      const countriesList = await axios.get(
+        `https://restcountries.com/v3.1/region/${region}?fields=cca2`,
+      );
 
-  useEffect(() => {
-    if (data !== undefined) setAnswer(data?.[0]?.translations?.por?.common);
-  }, [data]);
+      if (countriesList) {
+        let randomCountries: string[] = [];
+        for (let i = 0; i < 10; i++) {
+          const randomIndex = Math.floor(
+            Math.random() * countriesList.data.length,
+          );
+          randomCountries.push(countriesList.data[randomIndex].cca2);
+        }
 
-  const handleClick = (name: string) => {
-    setAttempt(1);
-    const newColors = { ...buttonColors };
-    newColors[name] = name === answer ? "limegreen" : "orangered";
-    setButtonColors(newColors);
-    if (name === answer) {
-      setShowText(true);
-      setPoints(points + 1);
-    } else {
-      setShowText(false);
+        const path = `/flag-game/jogo/${randomCountries.join("")}`;
+        window.location.href = path;
+      } else {
+        setError("Erro ao buscar países por região.");
+      }
+    } catch (error) {
+      setError("Erro ao iniciar jogo.");
+      console.error("Erro ao iniciar jogo", error);
     }
   };
-  const handleClickResult = () => {
-    setGameOver(true);
-  };
-  const handleClickRestart = () => {
-    setCurrentPage(1);
-    setAttempt(0);
-    setButtonColors({});
-    setShowText(false);
-    setGameOver(false);
-  };
 
-  const handleNextPage = () => {
-    setCurrentPage(currentPage + 1);
-    setAttempt(0);
-    setButtonColors({});
-    setShowText(false);
+  const handleExistingGame = (code: string) => {
+    const path = `/flag-game/jogo/${code}`;
+    window.location.href = path;
   };
 
   return (
-    <>
-      {isMobile ? (
-        <PageConatiner>
-          <ContentConatiner>
-            <CardContainer>
-              <div
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  flexDirection: "row",
-                  justifyContent: "space-between",
-                  alignItems: "center",
-                }}
-              >
-                <p>{currentPage}/15</p>
-                {currentPage >= 15 ? (
-                  <button onClick={handleClickResult}>Obter Resultado!</button>
-                ) : (
-                  attempt === 1 && (
-                    <button onClick={handleNextPage}>Próxima</button>
-                  )
-                )}
-              </div>
-              {loading ? (
-                  <></>
-                ) : (
-                  <img
-                    alt="flag"
-                    src={data?.[0]?.flags?.png}
-                    style={{
-                      minHeight: "25vh",
-                      maxHeight: "25vh",
-                      minWidth: "100%",
-                      maxWidth: "100%",
-                    }}
-                  ></img>
-                )}
-                {options?.map((countryName) => (
-                  <StyledButton
-                    key={countryName}
-                    bgColor={buttonColors[countryName]}
-                    onClick={() => handleClick(countryName)}
-                    disabled={attempt === 1}
-                  >
-                    {countryName}
-                  </StyledButton>
-                ))}
-                {gameOver ? (
-                  <ResultModal
-                    result={points}
-                    handleClickRestart={handleClickRestart}
-                  />
-                ) : (
-                  <></>
-                )}
-            </CardContainer>
-            {showText ? (
-                <div style={{ width: "100%", height: "25%", marginTop: "3%" }}>
-                  <MapComponent position={position} />
-                  <p style={{ maxWidth: "100%" }}>{text}</p>
-                </div>
-              ) : (
-                <></>
-              )}
-          </ContentConatiner>
-        </PageConatiner>
-      ) : (
-        <>
-          <div
-            style={{
-              position: "fixed",
-              width: "100%",
-              height: "100vh",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              backgroundColor: "whitesmoke",
+    <Container>
+      <Card>
+        <Title>🌍 Jogo das Bandeiras</Title>
+        <Subtitle>Teste seus conhecimentos sobre bandeiras do mundo!</Subtitle>
+
+        {error && <ErrorMessage>{error}</ErrorMessage>}
+
+        <ButtonGroup>
+          <Button
+            variant={newGame ? "primary" : "secondary"}
+            onClick={() => {
+              setNewGame(true);
+              setExistingGame(false);
             }}
           >
-            <div
-              style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                width: "40%",
-                height: "90%",
-              }}
-            >
-              <div
-                style={{
-                  width: "55%",
-                  height: "50%",
-                  display: "flex",
-                  flexDirection: "column",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <div
-                  style={{
-                    width: "100%",
-                    display: "flex",
-                    flexDirection: "row",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                  }}
-                >
-                  <p>{currentPage}/15</p>
-                  {currentPage >= 15 ? (
-                    <button onClick={handleClickResult}>
-                      Obter Resultado!
-                    </button>
-                  ) : (
-                    attempt === 1 && (
-                      <button onClick={handleNextPage}>Próxima</button>
-                    )
-                  )}
-                </div>
-                {loading ? (
-                  <></>
-                ) : (
-                  <img
-                    alt="flag"
-                    src={data?.[0]?.flags?.png}
-                    style={{
-                      minHeight: "25vh",
-                      maxHeight: "25vh",
-                      minWidth: "100%",
-                      maxWidth: "100%",
-                    }}
-                  ></img>
-                )}
-                {options?.map((countryName) => (
-                  <StyledButton
-                    key={countryName}
-                    bgColor={buttonColors[countryName]}
-                    onClick={() => handleClick(countryName)}
-                    disabled={attempt === 1}
-                  >
-                    {countryName}
-                  </StyledButton>
-                ))}
-                {gameOver ? (
-                  <ResultModal
-                    result={points}
-                    handleClickRestart={handleClickRestart}
-                  />
-                ) : (
-                  <></>
-                )}
-              </div>
-              {showText ? (
-                <div style={{ width: "90%", height: "30%", marginTop: "3%" }}>
-                  <MapComponent position={position} />
-                  <p style={{ maxWidth: "100%" }}>{text}</p>
-                </div>
-              ) : (
-                <></>
-              )}
-            </div>
-          </div>
-        </>
-      )}
-    </>
+            🎮 Novo Jogo
+          </Button>
+          <Button
+            variant={existingGame ? "primary" : "secondary"}
+            onClick={() => {
+              setExistingGame(true);
+              setNewGame(false);
+            }}
+          >
+            🔗 Jogo Existente
+          </Button>
+        </ButtonGroup>
+
+        {newGame && (
+          <>
+            <Divider />
+            <SectionTitle>Escolha uma região:</SectionTitle>
+            <RegionGrid>
+              {["americas", "africa", "asia", "europa", "oceania"].map((region) => (
+                <RegionButton key={region} onClick={() => handleNewGame(region)}>
+                  {region.charAt(0).toUpperCase() + region.slice(1)}
+                </RegionButton>
+              ))}
+            </RegionGrid>
+          </>
+        )}
+
+        {existingGame && (
+          <>
+            <Divider />
+            <SectionTitle>Digite o código do jogo:</SectionTitle>
+            <InputGroup>
+              <Input
+                type="text"
+                placeholder="Código do jogo"
+                value={gameCode}
+                onChange={(e) => setGameCode(e.target.value)}
+              />
+              <Button variant="primary" onClick={() => handleExistingGame(gameCode)}>
+                Jogar
+              </Button>
+            </InputGroup>
+          </>
+        )}
+      </Card>
+    </Container>
   );
 }
