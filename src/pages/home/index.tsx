@@ -24,11 +24,17 @@ export default function Home() {
 
   const handleNewGame = async (region: string) => {
     try {
-      if (region === "europa") region = "europe";
+      let baseUrl = "";
+      if (region === "europa") {
+        baseUrl = "https://restcountries.com/v3.1/region/europe?fields=cca2";
+        region = "europe";
+      } else if (region === "mundo") {
+        baseUrl = "https://restcountries.com/v3.1/all?fields=cca2";
+      } else {
+        baseUrl = `https://restcountries.com/v3.1/region/${region}?fields=cca2`;
+      }
 
-      const countriesList = await axios.get(
-        `https://restcountries.com/v3.1/region/${region}?fields=cca2`,
-      );
+      const countriesList = await axios.get(baseUrl);
 
       if (countriesList) {
         let randomCountries: string[] = [];
@@ -91,11 +97,16 @@ export default function Home() {
             <Divider />
             <SectionTitle>Escolha uma região:</SectionTitle>
             <RegionGrid>
-              {["americas", "africa", "asia", "europa", "oceania"].map((region) => (
-                <RegionButton key={region} onClick={() => handleNewGame(region)}>
-                  {region.charAt(0).toUpperCase() + region.slice(1)}
-                </RegionButton>
-              ))}
+              {["mundo", "americas", "africa", "asia", "europa", "oceania"].map(
+                (region) => (
+                  <RegionButton
+                    key={region}
+                    onClick={() => handleNewGame(region)}
+                  >
+                    {region.charAt(0).toUpperCase() + region.slice(1)}
+                  </RegionButton>
+                ),
+              )}
             </RegionGrid>
           </>
         )}
@@ -111,7 +122,10 @@ export default function Home() {
                 value={gameCode}
                 onChange={(e) => setGameCode(e.target.value)}
               />
-              <Button variant="primary" onClick={() => handleExistingGame(gameCode)}>
+              <Button
+                variant="primary"
+                onClick={() => handleExistingGame(gameCode)}
+              >
                 Jogar
               </Button>
             </InputGroup>
