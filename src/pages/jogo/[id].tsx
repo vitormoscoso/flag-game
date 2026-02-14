@@ -34,6 +34,7 @@ interface CountryInfo {
   translations: { por: { common: string } };
   latlng: number[];
   currencies: any;
+  region: string;
 }
 
 interface QuestionState {
@@ -58,7 +59,7 @@ export default function Game() {
         const response = await Promise.all(
           countries.map((code) =>
             axios.get(
-              `https://restcountries.com/v3.1/alpha/${code}?fields=name,flags,capital,area,subregion,population,translations,latlng,currencies`,
+              `https://restcountries.com/v3.1/alpha/${code}?fields=name,flags,capital,area,subregion,population,translations,latlng,currencies,region`,
             ),
           ),
         );
@@ -76,7 +77,7 @@ export default function Game() {
         // Gerar opções para cada país
         const allOptions = await Promise.all(
           countriesData.map(async (country) => {
-            return generateOptions(country.translations.por.common, countries);
+            return generateOptions(country.translations.por.common, country.region, countries);
           }),
         );
         setOptions(allOptions);
@@ -94,16 +95,12 @@ export default function Game() {
 
   const generateOptions = async (
     correctAnswer: string,
+    region: string,
     excludeCodes: string[],
   ) => {
     try {
-      // Buscar países aleatórios para as opções incorretas
-      const randomRegions = ["europe", "asia", "africa", "americas", "oceania"];
-      const randomRegion =
-        randomRegions[Math.floor(Math.random() * randomRegions.length)];
-
       const response = await axios.get(
-        `https://restcountries.com/v3.1/region/${randomRegion}?fields=translations,cca2`,
+        `https://restcountries.com/v3.1/region/${region}?fields=translations,cca2`,
       );
 
       let wrongOptions: string[] = [];
