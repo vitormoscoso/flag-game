@@ -42,9 +42,14 @@ export default function Home() {
           const randomIndex = Math.floor(
             Math.random() * countriesList.data.length,
           );
+
+          if(randomCountries.includes(countriesList.data[randomIndex].cca2)) {
+            i--;
+            continue;
+          }
+
           randomCountries.push(countriesList.data[randomIndex].cca2);
         }
-
         const path = `/flag-game/jogo/${randomCountries.join("")}`;
         window.location.href = path;
       } else {
