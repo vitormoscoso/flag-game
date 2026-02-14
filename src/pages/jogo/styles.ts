@@ -1,4 +1,4 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 
 export const Container = styled.div`
   min-height: 100vh;
@@ -7,16 +7,20 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  padding: 10px;
+  overflow: hidden;
 `;
 
 export const GameCard = styled.div`
   background: white;
   border-radius: 20px;
-  padding: 40px;
+  padding: 20px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 700px;
   width: 100%;
+  max-height: 98vh;
+  display: flex;
+  flex-direction: column;
   animation: fadeIn 0.5s ease-in;
 
   @keyframes fadeIn {
@@ -31,58 +35,62 @@ export const GameCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 30px 20px;
+    padding: 15px;
   }
 `;
 
 export const Header = styled.div`
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  flex-shrink: 0;
 `;
 
 export const ProgressBar = styled.div`
   background: #e2e8f0;
-  height: 8px;
+  height: 6px;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 20px;
+  margin-bottom: 12px;
 `;
 
 export const ProgressFill = styled.div<{ progress: number }>`
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   height: 100%;
-  width: ${props => props.progress}%;
+  width: ${(props) => props.progress}%;
   transition: width 0.3s ease;
 `;
 
 export const QuestionCounter = styled.p`
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   color: #718096;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   font-weight: 600;
 `;
 
 export const Title = styled.h1`
-  font-size: 1.8rem;
+  font-size: 1.4rem;
   color: #2d3748;
-  margin: 0 0 20px 0;
+  margin: 0;
   font-weight: 700;
 
   @media (max-width: 600px) {
-    font-size: 1.5rem;
+    font-size: 1.2rem;
   }
 `;
 
 export const FlagContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
+  flex-shrink: 0;
 `;
 
 export const FlagImage = styled.img`
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
+  max-height: 200px;
   height: auto;
+  object-fit: contain;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
@@ -93,51 +101,61 @@ export const FlagImage = styled.img`
 
   @media (max-width: 600px) {
     max-width: 100%;
+    max-height: 150px;
   }
 `;
 
 export const OptionsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-shrink: 0;
 `;
 
-export const OptionButton = styled.button<{ 
-  selected?: boolean; 
-  correct?: boolean; 
+export const OptionButton = styled.button<{
+  selected?: boolean;
+  correct?: boolean;
   wrong?: boolean;
   disabled?: boolean;
 }>`
-  padding: 16px 24px;
-  font-size: 1rem;
+  padding: 12px 20px;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
   font-weight: 600;
-  border: 2px solid ${props => {
-    if (props.correct) return '#48bb78';
-    if (props.wrong) return '#f56565';
-    if (props.selected) return '#667eea';
-    return '#e2e8f0';
-  }};
+  border: 2px solid
+    ${(props) => {
+      if (props.correct) return "#48bb78";
+      if (props.wrong) return "#f56565";
+      if (props.selected) return "#667eea";
+      return "#e2e8f0";
+    }};
   border-radius: 12px;
-  background: ${props => {
-    if (props.correct) return '#c6f6d5';
-    if (props.wrong) return '#fed7d7';
-    if (props.selected) return '#f7fafc';
-    return 'white';
+  background: ${(props) => {
+    if (props.correct) return "#c6f6d5";
+    if (props.wrong) return "#fed7d7";
+    if (props.selected) return "#f7fafc";
+    return "white";
   }};
-  color: ${props => {
-    if (props.correct) return '#22543d';
-    if (props.wrong) return '#742a2a';
-    return '#2d3748';
+  color: ${(props) => {
+    if (props.correct) return "#22543d";
+    if (props.wrong) return "#742a2a";
+    return "#2d3748";
   }};
-  cursor: ${props => props.disabled ? 'not-allowed' : 'pointer'};
+  cursor: ${(props) => (props.disabled ? "not-allowed" : "pointer")};
   transition: all 0.3s ease;
   text-align: left;
   position: relative;
-  opacity: ${props => props.disabled && !props.correct && !props.wrong ? 0.5 : 1};
+  opacity: ${(props) =>
+    props.disabled && !props.correct && !props.wrong ? 0.5 : 1};
 
   &:hover {
-    ${props => !props.disabled && !props.correct && !props.wrong && `
+    ${(props) =>
+      !props.disabled &&
+      !props.correct &&
+      !props.wrong &&
+      `
       border-color: #667eea;
       transform: translateX(4px);
       box-shadow: 0 4px 12px rgba(102, 126, 234, 0.2);
@@ -145,11 +163,11 @@ export const OptionButton = styled.button<{
   }
 
   &::after {
-    content: '${props => {
-      if (props.correct) return '✓';
-      if (props.wrong) return '✗';
-      return '';
-    }}';
+    content: ${(props) => {
+      if (props.correct) return '"✓"';
+      if (props.wrong) return '"✗"';
+      return '""';
+    }};
     position: absolute;
     right: 20px;
     font-size: 1.5rem;
@@ -159,36 +177,40 @@ export const OptionButton = styled.button<{
 
 export const NavigationContainer = styled.div`
   display: flex;
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 12px;
+  flex-shrink: 0;
 
   @media (max-width: 600px) {
     flex-direction: column;
   }
 `;
 
-export const NavButton = styled.button<{ variant?: 'primary' | 'secondary' }>`
+export const NavButton = styled.button<{ variant?: "primary" | "secondary" }>`
   flex: 1;
-  padding: 14px 28px;
-  font-size: 1rem;
+  padding: 11px 22px;
+  font-size: 0.95rem;
   font-weight: 600;
   border: none;
   border-radius: 12px;
   cursor: pointer;
   transition: all 0.3s ease;
-  background: ${props => props.variant === 'primary' ? 
-    'linear-gradient(135deg, #667eea 0%, #764ba2 100%)' : 
-    '#e2e8f0'};
-  color: ${props => props.variant === 'primary' ? 'white' : '#2d3748'};
-  box-shadow: ${props => props.variant === 'primary' ? 
-    '0 4px 15px rgba(102, 126, 234, 0.4)' : 
-    '0 2px 8px rgba(0, 0, 0, 0.1)'};
+  background: ${(props) =>
+    props.variant === "primary"
+      ? "linear-gradient(135deg, #667eea 0%, #764ba2 100%)"
+      : "#e2e8f0"};
+  color: ${(props) => (props.variant === "primary" ? "white" : "#2d3748")};
+  box-shadow: ${(props) =>
+    props.variant === "primary"
+      ? "0 4px 15px rgba(102, 126, 234, 0.4)"
+      : "0 2px 8px rgba(0, 0, 0, 0.1)"};
 
   &:hover:not(:disabled) {
     transform: translateY(-2px);
-    box-shadow: ${props => props.variant === 'primary' ? 
-      '0 6px 20px rgba(102, 126, 234, 0.6)' : 
-      '0 4px 12px rgba(0, 0, 0, 0.15)'};
+    box-shadow: ${(props) =>
+      props.variant === "primary"
+        ? "0 6px 20px rgba(102, 126, 234, 0.6)"
+        : "0 4px 12px rgba(0, 0, 0, 0.15)"};
   }
 
   &:active:not(:disabled) {
@@ -201,40 +223,18 @@ export const NavButton = styled.button<{ variant?: 'primary' | 'secondary' }>`
   }
 `;
 
-export const ResultIndicator = styled.div<{ correct: boolean }>`
-  padding: 16px;
-  border-radius: 12px;
-  background: ${props => props.correct ? '#c6f6d5' : '#fed7d7'};
-  border: 2px solid ${props => props.correct ? '#48bb78' : '#f56565'};
-  color: ${props => props.correct ? '#22543d' : '#742a2a'};
-  margin-bottom: 20px;
-  text-align: center;
-  font-weight: 600;
-  animation: slideIn 0.3s ease-in;
-
-  @keyframes slideIn {
-    from {
-      opacity: 0;
-      transform: translateY(-10px);
-    }
-    to {
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-`;
-
 export const Score = styled.div`
   text-align: center;
-  margin-top: 20px;
-  padding: 16px;
+  margin-top: 12px;
+  padding: 12px;
   background: #f7fafc;
   border-radius: 12px;
   border: 2px solid #e2e8f0;
+  flex-shrink: 0;
 `;
 
 export const ScoreText = styled.p`
-  font-size: 1.1rem;
+  font-size: 0.95rem;
   color: #2d3748;
   margin: 0;
   font-weight: 600;
@@ -263,8 +263,12 @@ export const Spinner = styled.div`
   animation: spin 1s linear infinite;
 
   @keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
   }
 `;
 
