@@ -2,23 +2,25 @@ import styled from "styled-components";
 
 export const Container = styled.div`
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 10px;
+  padding: clamp(8px, 2vw, 12px);
   overflow: hidden;
 `;
 
 export const GameCard = styled.div`
   background: white;
   border-radius: 20px;
-  padding: 20px;
+  padding: clamp(12px, 2.5vw, 20px);
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-  max-width: 700px;
+  max-width: 50%;
   width: 100%;
-  max-height: 98vh;
+  max-height: 96vh;
+  max-height: 96dvh;
   display: flex;
   flex-direction: column;
   animation: fadeIn 0.5s ease-in;
@@ -35,13 +37,14 @@ export const GameCard = styled.div`
   }
 
   @media (max-width: 768px) {
-    padding: 15px;
+    border-radius: 16px;
+    max-width: 90%;
   }
 `;
 
 export const Header = styled.div`
   text-align: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 `;
 
@@ -50,7 +53,7 @@ export const ProgressBar = styled.div`
   height: 6px;
   border-radius: 4px;
   overflow: hidden;
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 `;
 
 export const ProgressFill = styled.div<{ progress: number }>`
@@ -61,14 +64,14 @@ export const ProgressFill = styled.div<{ progress: number }>`
 `;
 
 export const QuestionCounter = styled.p`
-  font-size: 0.85rem;
+  font-size: clamp(0.75rem, 2.2vw, 0.85rem);
   color: #718096;
-  margin: 0 0 8px 0;
+  margin: 0 0 6px 0;
   font-weight: 600;
 `;
 
 export const Title = styled.h1`
-  font-size: 1.4rem;
+  font-size: clamp(1.1rem, 3.2vw, 1.4rem);
   color: #2d3748;
   margin: 0;
   font-weight: 700;
@@ -81,14 +84,14 @@ export const Title = styled.h1`
 export const FlagContainer = styled.div`
   display: flex;
   justify-content: center;
-  margin-bottom: 15px;
+  margin-bottom: 10px;
   flex-shrink: 0;
 `;
 
 export const FlagImage = styled.img`
   width: 100%;
-  max-width: 350px;
-  max-height: 200px;
+  max-width: min(360px, 90vw);
+  max-height: clamp(120px, 22vh, 200px);
   height: auto;
   object-fit: contain;
   border-radius: 12px;
@@ -100,16 +103,15 @@ export const FlagImage = styled.img`
   }
 
   @media (max-width: 600px) {
-    max-width: 100%;
-    max-height: 150px;
+    max-height: clamp(110px, 20vh, 150px);
   }
 `;
 
 export const OptionsContainer = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 8px;
-  margin-bottom: 12px;
+  gap: 6px;
+  margin-bottom: 8px;
   flex-shrink: 0;
 `;
 
@@ -119,8 +121,8 @@ export const OptionButton = styled.button<{
   wrong?: boolean;
   disabled?: boolean;
 }>`
-  padding: 12px 20px;
-  font-size: 0.95rem;
+  padding: 10px 16px;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
   display: flex;
   align-items: center;
   font-weight: 600;
@@ -178,7 +180,7 @@ export const OptionButton = styled.button<{
 export const NavigationContainer = styled.div`
   display: flex;
   gap: 10px;
-  margin-top: 12px;
+  margin-top: 8px;
   flex-shrink: 0;
 
   @media (max-width: 600px) {
@@ -188,8 +190,8 @@ export const NavigationContainer = styled.div`
 
 export const NavButton = styled.button<{ variant?: "primary" | "secondary" }>`
   flex: 1;
-  padding: 11px 22px;
-  font-size: 0.95rem;
+  padding: 10px 18px;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
   font-weight: 600;
   border: none;
   border-radius: 12px;
@@ -225,8 +227,8 @@ export const NavButton = styled.button<{ variant?: "primary" | "secondary" }>`
 
 export const Score = styled.div`
   text-align: center;
-  margin-top: 12px;
-  padding: 12px;
+  margin-top: 8px;
+  padding: 10px;
   background: #f7fafc;
   border-radius: 12px;
   border: 2px solid #e2e8f0;
@@ -234,7 +236,7 @@ export const Score = styled.div`
 `;
 
 export const ScoreText = styled.p`
-  font-size: 0.95rem;
+  font-size: clamp(0.8rem, 2.5vw, 0.95rem);
   color: #2d3748;
   margin: 0;
   font-weight: 600;
@@ -275,8 +277,8 @@ export const Spinner = styled.div`
 export const ShareContainer = styled.div`
   display: flex;
   justify-content: center;
-  padding: 14px 28px;
-  font-size: 1rem;
+  padding: 10px 18px;
+  font-size: clamp(0.85rem, 2.5vw, 1rem);
   font-weight: 600;
   border: none;
   border-radius: 12px;
@@ -285,7 +287,7 @@ export const ShareContainer = styled.div`
   background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
   color: white;
   box-shadow: 0 4px 15px rgba(72, 187, 120, 0.4);
-  margin-top: 20px;
+  margin-top: 12px;
 
   &:hover {
     transform: translateY(-2px);
