@@ -272,8 +272,9 @@ export const Spinner = styled.div`
   }
 `;
 
-export const ShareButton = styled.button`
-  width: 100%;
+export const ShareContainer = styled.div`
+  display: flex;
+  justify-content: center;
   padding: 14px 28px;
   font-size: 1rem;
   font-weight: 600;

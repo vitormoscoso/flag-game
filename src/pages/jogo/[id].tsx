@@ -1,6 +1,7 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
+import { WhatsappIcon } from "react-share";
 import {
   Container,
   FlagContainer,
@@ -18,7 +19,7 @@ import {
   QuestionCounter,
   Score,
   ScoreText,
-  ShareButton,
+  ShareContainer,
   Spinner,
   Title,
 } from "./styles";
@@ -174,21 +175,24 @@ export default function Game() {
     return questionStates.filter((state) => state.isCorrect === true).length;
   };
 
-  const shareResults = () => {
+  const buildShareMessage = () => {
     const score = calculateScore();
     const total = countriesInfo.length;
     const gameUrl = window.location.href;
-    const text = `🌍 Flag Game - Consegui ${score}/${total} pontos! Você consegue me superar? ${gameUrl}`;
+    return `🌍 Jogo das Bandeiras - Consegui ${score}/${total} pontos! Você consegue me superar?\n\n${gameUrl}`;
+  };
 
-    if (navigator.share) {
-      navigator.share({
-        title: "Flag Game",
-        text: text,
+  const shareResults = () => {
+    const text = buildShareMessage();
+
+    navigator.clipboard
+      .writeText(text)
+      .then(() => {
+        console.log("Resultados copiados para a área de transferência!");
+      })
+      .catch((err) => {
+        console.error("Erro ao copiar os resultados: ", err);
       });
-    } else {
-      navigator.clipboard.writeText(text);
-      alert("Link copiado para a área de transferência!");
-    }
   };
 
   if (loading) {
@@ -220,9 +224,25 @@ export default function Game() {
               Você acertou {score} de {total} questões ({percentage}%)
             </ScoreText>
           </Score>
-          <ShareButton onClick={shareResults}>
-            📤 Compartilhar Resultado
-          </ShareButton>
+          <ShareContainer>
+            <a
+              href={`https://api.whatsapp.com/send?text=${encodeURIComponent(buildShareMessage())}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              onClick={shareResults}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                textAlign: "center",
+                gap: "8px",
+                textDecoration: "none",
+                color: "#fff",
+              }}
+            >
+              <WhatsappIcon size={32} round />
+              Compartilhar Resultado
+            </a>
+          </ShareContainer>
           <NavigationContainer>
             <NavButton onClick={() => (window.location.href = "/flag-game/")}>
               🏠 Voltar ao Início
