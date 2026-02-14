@@ -7,16 +7,19 @@ export const Container = styled.div`
   align-items: center;
   justify-content: center;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  padding: 20px;
+  padding: 15px;
+  overflow: hidden;
 `;
 
 export const Card = styled.div`
   background: white;
   border-radius: 20px;
-  padding: 40px;
+  padding: 30px;
   box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
   max-width: 500px;
   width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
   animation: fadeIn 0.5s ease-in;
 
   @keyframes fadeIn {
@@ -31,33 +34,33 @@ export const Card = styled.div`
   }
 
   @media (max-width: 600px) {
-    padding: 30px 20px;
+    padding: 20px 15px;
   }
 `;
 
 export const Title = styled.h1`
-  font-size: 2.5rem;
+  font-size: 2rem;
   color: #2d3748;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   text-align: center;
   font-weight: 700;
 
   @media (max-width: 600px) {
-    font-size: 2rem;
+    font-size: 1.7rem;
   }
 `;
 
 export const Subtitle = styled.p`
-  font-size: 1rem;
+  font-size: 0.95rem;
   color: #718096;
   text-align: center;
-  margin: 0 0 30px 0;
+  margin: 0 0 20px 0;
 `;
 
 export const ButtonGroup = styled.div`
   display: flex;
-  gap: 15px;
-  margin-bottom: 30px;
+  gap: 12px;
+  margin-bottom: 20px;
 
   @media (max-width: 600px) {
     flex-direction: column;
@@ -66,8 +69,8 @@ export const ButtonGroup = styled.div`
 
 export const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   flex: 1;
-  padding: 15px 30px;
-  font-size: 1rem;
+  padding: 12px 24px;
+  font-size: 0.95rem;
   font-weight: 600;
   border: none;
   border-radius: 12px;
@@ -90,8 +93,8 @@ export const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
 export const RegionGrid = styled.div`
   display: grid;
   grid-template-columns: repeat(2, 1fr);
-  gap: 12px;
-  margin-top: 20px;
+  gap: 10px;
+  margin-top: 15px;
 
   @media (max-width: 600px) {
     grid-template-columns: 1fr;
@@ -99,8 +102,8 @@ export const RegionGrid = styled.div`
 `;
 
 export const RegionButton = styled.button`
-  padding: 15px 20px;
-  font-size: 0.95rem;
+  padding: 12px 16px;
+  font-size: 0.9rem;
   font-weight: 600;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
@@ -124,13 +127,13 @@ export const RegionButton = styled.button`
 export const InputGroup = styled.div`
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  margin-top: 20px;
+  gap: 12px;
+  margin-top: 15px;
 `;
 
 export const Input = styled.input`
-  padding: 15px 20px;
-  font-size: 1rem;
+  padding: 12px 16px;
+  font-size: 0.95rem;
   border: 2px solid #e2e8f0;
   border-radius: 12px;
   outline: none;
@@ -149,22 +152,22 @@ export const Input = styled.input`
 export const ErrorMessage = styled.p`
   background: #fed7d7;
   color: #c53030;
-  padding: 12px 16px;
+  padding: 10px 14px;
   border-radius: 8px;
-  margin: 0 0 20px 0;
-  font-size: 0.9rem;
+  margin: 0 0 15px 0;
+  font-size: 0.85rem;
   text-align: center;
 `;
 
 export const SectionTitle = styled.h3`
-  font-size: 1.1rem;
+  font-size: 1rem;
   color: #2d3748;
-  margin: 0 0 15px 0;
+  margin: 0 0 12px 0;
   font-weight: 600;
 `;
 
 export const Divider = styled.div`
   height: 1px;
   background: #e2e8f0;
-  margin: 25px 0;
+  margin: 18px 0;
 `;

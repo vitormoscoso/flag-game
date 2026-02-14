@@ -3,25 +3,24 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import {
   Container,
+  FlagContainer,
+  FlagImage,
   GameCard,
   Header,
+  LoadingContainer,
+  LoadingText,
+  NavButton,
+  NavigationContainer,
+  OptionButton,
+  OptionsContainer,
   ProgressBar,
   ProgressFill,
   QuestionCounter,
-  Title,
-  FlagContainer,
-  FlagImage,
-  OptionsContainer,
-  OptionButton,
-  NavigationContainer,
-  NavButton,
-  ResultIndicator,
   Score,
   ScoreText,
-  LoadingContainer,
-  LoadingText,
-  Spinner,
   ShareButton,
+  Spinner,
+  Title,
 } from "./styles";
 
 interface CountryInfo {
@@ -62,7 +61,7 @@ export default function Game() {
             ),
           ),
         );
-        const countriesData = response.map(res => res.data);
+        const countriesData = response.map((res) => res.data);
         setCountriesInfo(countriesData);
 
         // Inicializar estados das questões
@@ -77,7 +76,7 @@ export default function Game() {
         const allOptions = await Promise.all(
           countriesData.map(async (country) => {
             return generateOptions(country.translations.por.common, countries);
-          })
+          }),
         );
         setOptions(allOptions);
         setLoading(false);
@@ -92,25 +91,35 @@ export default function Game() {
     }
   }, [gameID]);
 
-  const generateOptions = async (correctAnswer: string, excludeCodes: string[]) => {
+  const generateOptions = async (
+    correctAnswer: string,
+    excludeCodes: string[],
+  ) => {
     try {
       // Buscar países aleatórios para as opções incorretas
-      const randomRegions = ['europe', 'asia', 'africa', 'americas', 'oceania'];
-      const randomRegion = randomRegions[Math.floor(Math.random() * randomRegions.length)];
-      
+      const randomRegions = ["europe", "asia", "africa", "americas", "oceania"];
+      const randomRegion =
+        randomRegions[Math.floor(Math.random() * randomRegions.length)];
+
       const response = await axios.get(
-        `https://restcountries.com/v3.1/region/${randomRegion}?fields=translations,cca2`
+        `https://restcountries.com/v3.1/region/${randomRegion}?fields=translations,cca2`,
       );
-      
+
       let wrongOptions: string[] = [];
       const availableCountries = response.data.filter(
-        (c: any) => !excludeCodes.includes(c.cca2) && c.translations?.por?.common !== correctAnswer
+        (c: any) =>
+          !excludeCodes.includes(c.cca2) &&
+          c.translations?.por?.common !== correctAnswer,
       );
 
       // Selecionar 4 opções erradas aleatórias
       for (let i = 0; i < 4 && availableCountries.length > 0; i++) {
-        const randomIndex = Math.floor(Math.random() * availableCountries.length);
-        wrongOptions.push(availableCountries[randomIndex].translations.por.common);
+        const randomIndex = Math.floor(
+          Math.random() * availableCountries.length,
+        );
+        wrongOptions.push(
+          availableCountries[randomIndex].translations.por.common,
+        );
         availableCountries.splice(randomIndex, 1);
       }
 
@@ -162,7 +171,7 @@ export default function Game() {
   };
 
   const calculateScore = () => {
-    return questionStates.filter(state => state.isCorrect === true).length;
+    return questionStates.filter((state) => state.isCorrect === true).length;
   };
 
   const shareResults = () => {
@@ -170,15 +179,15 @@ export default function Game() {
     const total = countriesInfo.length;
     const gameUrl = window.location.href;
     const text = `🌍 Flag Game - Consegui ${score}/${total} pontos! Você consegue me superar? ${gameUrl}`;
-    
+
     if (navigator.share) {
       navigator.share({
-        title: 'Flag Game',
+        title: "Flag Game",
         text: text,
       });
     } else {
       navigator.clipboard.writeText(text);
-      alert('Link copiado para a área de transferência!');
+      alert("Link copiado para a área de transferência!");
     }
   };
 
@@ -215,11 +224,11 @@ export default function Game() {
             📤 Compartilhar Resultado
           </ShareButton>
           <NavigationContainer>
-            <NavButton onClick={() => window.location.href = '/flag-game/'}>
+            <NavButton onClick={() => (window.location.href = "/flag-game/")}>
               🏠 Voltar ao Início
             </NavButton>
-            <NavButton 
-              variant="primary" 
+            <NavButton
+              variant="primary"
               onClick={() => window.location.reload()}
             >
               🔄 Jogar Novamente
@@ -255,18 +264,11 @@ export default function Game() {
           />
         </FlagContainer>
 
-        {currentState.answered && (
-          <ResultIndicator correct={currentState.isCorrect || false}>
-            {currentState.isCorrect 
-              ? '✓ Correto! Parabéns!' 
-              : `✗ Incorreto! A resposta correta é: ${currentCountry?.translations?.por?.common}`}
-          </ResultIndicator>
-        )}
-
         <OptionsContainer>
           {currentOptions.map((option, index) => {
             const isSelected = currentState.selectedAnswer === option;
-            const isCorrect = option === currentCountry?.translations?.por?.common;
+            const isCorrect =
+              option === currentCountry?.translations?.por?.common;
             const showCorrect = currentState.answered && isCorrect;
             const showWrong = currentState.answered && isSelected && !isCorrect;
 
@@ -286,18 +288,17 @@ export default function Game() {
         </OptionsContainer>
 
         <NavigationContainer>
-          <NavButton 
-            onClick={handlePrevious}
-            disabled={currentIndex === 0}
-          >
+          <NavButton onClick={handlePrevious} disabled={currentIndex === 0}>
             ← Anterior
           </NavButton>
-          <NavButton 
+          <NavButton
             variant="primary"
             onClick={handleNext}
             disabled={!currentState.answered}
           >
-            {currentIndex === countriesInfo.length - 1 ? 'Finalizar' : 'Próximo →'}
+            {currentIndex === countriesInfo.length - 1
+              ? "Finalizar"
+              : "Próximo →"}
           </NavButton>
         </NavigationContainer>
 
