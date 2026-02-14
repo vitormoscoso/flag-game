@@ -94,9 +94,11 @@ export const FlagImage = styled.img`
   max-height: clamp(120px, 22vh, 200px);
   height: auto;
   object-fit: contain;
+  padding: 5px;
   border-radius: 12px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   transition: transform 0.3s ease;
+  background-color: #c2c4c4;
 
   &:hover {
     transform: scale(1.02);
