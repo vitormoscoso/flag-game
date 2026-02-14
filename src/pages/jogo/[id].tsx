@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { WhatsappIcon } from "react-share";
 import {
   Container,
@@ -44,6 +44,7 @@ interface QuestionState {
 }
 
 export default function Game() {
+  const navigate = useNavigate();
   const gameID = useParams().id;
   const [countriesInfo, setCountriesInfo] = useState<CountryInfo[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -241,7 +242,7 @@ export default function Game() {
             </a>
           </ShareContainer>
           <NavigationContainer>
-            <NavButton onClick={() => (window.location.href = "/flag-game/")}>
+            <NavButton onClick={() => navigate("/")}>
               🏠 Voltar ao Início
             </NavButton>
             <NavButton

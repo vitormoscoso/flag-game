@@ -1,22 +1,24 @@
 import axios from "axios";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import {
-  Container,
-  Card,
-  Title,
-  Subtitle,
-  ButtonGroup,
   Button,
-  RegionGrid,
-  RegionButton,
-  InputGroup,
-  Input,
-  ErrorMessage,
-  SectionTitle,
+  ButtonGroup,
+  Card,
+  Container,
   Divider,
+  ErrorMessage,
+  Input,
+  InputGroup,
+  RegionButton,
+  RegionGrid,
+  SectionTitle,
+  Subtitle,
+  Title,
 } from "./styles";
 
 export default function Home() {
+  const navigate = useNavigate();
   const [newGame, setNewGame] = useState<boolean>(false);
   const [existingGame, setExistingGame] = useState<boolean>(false);
   const [gameCode, setGameCode] = useState<string>("");
@@ -43,15 +45,16 @@ export default function Home() {
             Math.random() * countriesList.data.length,
           );
 
-          if(randomCountries.includes(countriesList.data[randomIndex].cca2)) {
+          if (randomCountries.includes(countriesList.data[randomIndex].cca2)) {
             i--;
             continue;
           }
 
           randomCountries.push(countriesList.data[randomIndex].cca2);
         }
-        const path = `/flag-game/jogo/${randomCountries.join("")}`;
-        window.location.href = path;
+        const path = `/jogo/${randomCountries.join("")}`;
+        // window.location.href = path;
+        navigate(path);
       } else {
         setNewGame(false);
         setError("Erro ao buscar países por região.");
@@ -64,8 +67,8 @@ export default function Home() {
   };
 
   const handleExistingGame = (code: string) => {
-    const path = `/flag-game/jogo/${code}`;
-    window.location.href = path;
+    const path = `/jogo/${code}`;
+    navigate(path);
   };
 
   return (
